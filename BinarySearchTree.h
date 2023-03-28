@@ -24,6 +24,10 @@ public:
 	int Size();
 	void Print(Node<T>* toprint);
 
+	//these are used in recurssion where yah ahve to keep track of the parent and grandparent
+	//Node<T>* BinarySearchTree<T>::FindTransverseParent(T* inval, Node<T>* parent);
+	Node<T>* FindTransverseFamily(T* inval, Node<T>* grandparent, Node<T>* parent, Node<T>* child);
+
 	int GetHeight(Node<T>* current);   //This does the rebalancing
 	void RotateLeft(Node<T>* parent, Node<T>* pivot);  // change arguments to be more appropriate
 	void RotateRight(Node<T>* parent, Node<T>* pivot);
