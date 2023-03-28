@@ -8,12 +8,74 @@ BinarySearchTree<T>::BinarySearchTree(){
 template <typename T>
 BinarySearchTree<T>::~BinarySearchTree() { }
 template <typename T>
-void BinarySearchTree<T>::Insert(T* inval) { }
+void BinarySearchTree<T>::Insert(T* inval, Node<T>* parent) {
+	//inserting options:
+	//head->right->right
+	//head->right->left
+	//head->left->right
+	//head->left->left
+
+	//recursion
+	if(root == nullptr) {
+		root = new Node<T>(inval);
+		return;
+	}
+	elseif(*inval->key > *parent->key){
+		Insert(inval, parent->right);
+	}
+	else {
+		Insert(inval, parent->left);
+	}
+	//need to manage other parameters here like
+	//height
+	//balance
+	//level
+	//size or count
+
+}
 template <typename T>
-void BinarySearchTree<T>::Remove(T* inval) { }
+void BinarySearchTree<T>::Remove(T* inval) {
+
 //these functions Remove should rebalance if necessary
+
+
+}
+
+
 template <typename T>
-bool BinarySearchTree<T>::Find(T* inval) { }
+bool BinarySearchTree<T>::Find(T* inval, Node<T>* parent) {
+	//recurssion
+	if (parent == nullptr) {
+		return false;
+	}
+	else if (*parent->key == inval) {
+		return true;
+	}
+	else if (inval > *parent->key) {
+		return FindTransverse(inval, parent->right);
+	}
+	else {
+		return FindTransverse(inval, parent->left);
+	}
+
+}
+template <typename T>
+Node<T>* BinarySearchTree<T>::FindTransverse(T* inval, Node<T>* parent) {
+	//recurssion
+	if (parent == nullptr) {
+		return nullptr;
+	}
+	else if (*parent->key == inval) {
+		return parent;
+			}
+	else if (inval > *parent->key) {
+		return FindTransverse(inval, parent->right);
+	}
+	else {
+		return FindTransverse(inval, parent->left);
+	}
+
+}
 template <typename T>
 void BinarySearchTree<T>::GetAllAscending() { }
 template <typename T>
@@ -53,6 +115,11 @@ int BinarySearchTree<T>::GetHeight(Node<T>* current) {
 	{
 		return R + 1; 
 	}
+	//inserting options:
+	//head->right->right
+	//head->right->left
+	//head->left->right
+	//head->left->left
 }   //This does the rebalancing
 template <typename T>
 void BinarySearchTree<T>::RotateLeft(Node<T>* parent, Node<T>* pivot) { }

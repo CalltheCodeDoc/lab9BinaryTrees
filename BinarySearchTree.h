@@ -13,10 +13,11 @@ public:
 
 	BinarySearchTree();
 	~BinarySearchTree();
-	void Insert(T* inval);
+	void Insert(T* inval, Node<T>* parent);
 	void Remove(T* inval);
 	//these functions Remove should rebalance if necessary
-	bool Find(T* inval);
+	bool Find(T* inval, Node<T>* parent);
+	Node<T>* FindTransverse(T* inval, Node<T>* parent);
 	void GetAllAscending();   //key is string,  count is data//  sort by string
 	void GetAllDescending();
 	void EmptyTree();
