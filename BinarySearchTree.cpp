@@ -187,10 +187,22 @@ void BinarySearchTree<T>::Remove(T* inval) {
 
 
 			}
+			/*
+			else {
+				//no children under target, so simply change parents pointer to it to null and delete
+			if(temp->Target_Parent->left==temp->Target)
+				temp->Target_Parent->left = nullptr;
+			else if (temp->Target_Parent->right == temp->Target)
+				temp->Target_Parent->right = nullptr;
+			else {
+				//error
+			}
+			}
+			*/
 
 
 
-
+			
 			temp->Target_Parent = nullptr;
 			temp->isTarget = false;
 			temp->Target = nullptr;
