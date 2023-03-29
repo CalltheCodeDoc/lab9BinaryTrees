@@ -16,31 +16,131 @@ void BinarySearchTree<T>::Insert(T* inval, Node<T>* parent) {
 	//head->left->left
 
 	//recursion
+
+	//************************************************************
+	//duplicate values are always put on leftside
+	// what if that first node is  removed, will it still find the duplicate value?
+	// //i think so if rebalancing is handled right
+	// BUT THE STANDARD FOR THIS CODE IS ALL DUPLICATE VALUES GET PLACED ON THE LEFT
+	//************************************************************
 	if(root == nullptr) {
 		root = new Node<T>(inval);
 		return;
 	}
-	elseif(*inval->key > *parent->key){
+	else if(*inval > *parent->key){
+		if (parent->right == nullptr) {
+			parent->right = new Node<T>(inval);
+			return;
+		}
 		Insert(inval, parent->right);
 	}
 	else {
+		if (parent->left == nullptr) {
+			parent->left = new Node<T>(inval);
+			return;
+		}
 		Insert(inval, parent->left);
 	}
 	//need to manage other parameters here like
+	// 
 	//height
 	//balance
 	//level
 	//size or count
-
+	//
+	//NEED TO REBALANCE HERE TOOO
 }
 template <typename T>
 void BinarySearchTree<T>::Remove(T* inval) {
 
-//these functions Remove should rebalance if necessary
-	//this is inefficient
+	//these functions Remove should rebalance if necessary
+		//this is inefficient
+	//Node<T>* tempgrandchild = FindTransverse(inval, root);
+	//bool children = false;
+	Node<T>* temp = FindTransverseFamily(inval, root, nullptr, nullptr);
+
+	if (temp == nullptr) {
+		return; //nothing to remove   SHould PRINT OUT A THROW EXCEPTION BUT KEEP PROGRAM RUNNING
+	}
+	else if (temp->isTarget) {
+		if (temp->left == nullptr && temp->right == nullptr) {
+			//target is root and is the only node in tree
+			temp->isTarget = false;
+			temp->Target = nullptr;
+			root = nullptr;
+			delete temp;    //********************** remove if u dont want to delete but want to fetch it
+			//no rebalancing necessary here
+		}
+		else {
+			//TODO
+			//what to do if root has children
+			//rebalance? or just remove and let rebalancing handle it? or just remove and dont rebalance?
+
+
+
+
+
+
+
+			temp->Target_Parent = nullptr;
+			temp->isTarget = false;
+			temp->Target = nullptr;
+			delete temp;
+		}
+
+	}
+	else {
+		//remove
+		if (temp->Target!= nullptr && (temp->Target->left !=nullptr || temp->Target->right !=nullptr)) {//children
+			//have to reinsert children in tree
+			// //rebalance
+			//TODO
+
+
+
+
+
+
+
+
+			temp->Target_Parent = nullptr;
+			temp->isTarget = false;
+			temp->Target = nullptr;
+			delete temp;
+
+		}
+		else {//nochildren
+			//isleaf
+			if (temp->Target_Parent != nullptr && temp->Target != nullptr) {
+
+
+				if (temp->Target_Parent->left == temp->Target) {
+					temp->Target_Parent->left = nullptr;
+				}
+				else {
+					temp->Target_Parent->right = nullptr;
+				}
+
+				temp->isTarget = false;
+				temp->Target_Parent == nullptr;
+				temp->Target == nullptr;
+				delete temp
+
+
+			}
+
+		}
+	}
+}
+
+template <typename T>
+Node<T>* BinarySearchTree<T>::DEADFUNCTION(T* inval, Node<T>* parent) {
+	/////////////////////////////  DONT USE CODE BELOW
+	/////////////////////////////////////////////////////////////////////////////
 	Node<T>* tempgrandchild = FindTransverse(inval, root);
 	Node<T>* temp = FindTransverseFamily(inval, root, nullptr, nullptr);
 	bool children = false;
+
 	if (tempgrandchild == nullptr) {
 		return; //nothing to remove   SHould PRINT OUT A THROW EXCEPTION BUT KEEP PROGRAM RUNNING
 	}
@@ -66,7 +166,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				//first if only activates if temp is the root and tempgrandchild= temp
 				//if this isnt the case then there is a bug here
 			 if (*temp->key == *inval) {
-				 root == nullptr;
+				 root == nullptr;  //*************************************************************
 				 delete temp->key;
 				 delete temp->data;
 				 delete temp;
@@ -100,9 +200,9 @@ void BinarySearchTree<T>::Remove(T* inval) {
 						 return;
 					 }
 				 }
-				 else {
+				 //else {
 					 //dont need this else
-				 }
+				 //}
 			}
 			else {
 				 if (*temp->left->key == *inval) {
@@ -132,9 +232,9 @@ void BinarySearchTree<T>::Remove(T* inval) {
 						 return;
 					 }
 				 }
-				 else {
+				 //else {
 					 //dont need this else
-				 }
+				// }
 			}
 				//problem wiht this is yah need to work with parents and grandparents
 				//in both the if and else case
@@ -196,7 +296,6 @@ Node<T>* BinarySearchTree<T>::FindTransverseFamily(T* inval, Node<T>* grandparen
 	//GOTTA FIGURE OUT HOW TO DEAL WITH THIS WITH FUNCTIONS THAT CALL THIS
 	//************************************************************
 
-	//should i return the grandparent or a vector of the family?
 	if (parent == nullptr && child == nullptr) {
 		//this basically says we are at the root, parent and child of the current search position don't necessarily
 		//equal null, 
@@ -206,6 +305,9 @@ Node<T>* BinarySearchTree<T>::FindTransverseFamily(T* inval, Node<T>* grandparen
 			return nullptr; //not found
 		}
 		else if (*grandparent->key == inval) {
+			grandparent->isTarget = True;
+			grandparent->Target_Parent = nullptr;  //***************************************** even if u put root it wont work, will have to deal with the root issue iftarget is true, then change what root points too manually ********************
+			grandparent->Target = grandparent; 
 			return grandparent;
 		}
 		else if (inval > *grandparent->key) {
@@ -222,6 +324,9 @@ Node<T>* BinarySearchTree<T>::FindTransverseFamily(T* inval, Node<T>* grandparen
 			return nullptr; //not found
 		}
 		else if (*parent->key == *inval) {
+			grandparent->isTarget = false;
+			grandparent->Target_Parent = grandparent;  //***************************************** even if u put root it wont work, will have to deal with the root issue iftarget is true, then change what root points too manually ********************
+			grandparent->Target = parent;
 			return grandparent;
 		}
 		else if (*inval > *parent->key) {
@@ -238,6 +343,9 @@ Node<T>* BinarySearchTree<T>::FindTransverseFamily(T* inval, Node<T>* grandparen
 			return nullptr; //not found
 		}
 		else if (*child->key == *inval) {
+			grandparent->isTarget = false;  //***************************************** even if u put root it wont work, will have to deal with the root issue iftarget is true, then change what root points too manually ********************
+			grandparent->Target_Parent = parent; 
+			grandparent->Target = child;
 			return grandparent;
 		}
 		else if (*inval > *child->key) {

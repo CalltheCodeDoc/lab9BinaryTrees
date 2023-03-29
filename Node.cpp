@@ -6,6 +6,9 @@ Node<T>::Node(T inval) {
 	//or is data the count????
 	left = nullptr;
 	right = nullptr;
+	isTarget = false;
+	Target_Parent = nullptr;
+	Target = nullptr;
 	//DO we let Node handle connections to other nodes or BinarySearchTree?
 }
 
