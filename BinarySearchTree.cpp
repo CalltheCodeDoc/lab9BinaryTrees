@@ -76,10 +76,51 @@ void BinarySearchTree<T>::Remove(T* inval) {
 			//what to do if root has children
 			//rebalance? or just remove and let rebalancing handle it? or just remove and dont rebalance?
 
+			if (temp->Target->left != nullptr&& temp->Target->right == nullptr) {
+				root = temp->Target->left;
+				//temp->Target->left = nullptr;
+				//below line is unnecessary
+				temp->Target->left->right= temp->right //THIS ONLY WORKS IF target has no children
+					//TO DO
+					//could put conditionals where if temp->right and temp->Target->left->right are not null then do somethign differeent
+					//conditoinal would have to be above the above line
+					//but it conflicts with the above if condition
+			}
+			else if(temp->Target->right != nullptr && temp->Target->left == nullptr) {
+				root = temp->Target->right;
+				//temp->Target->right = nullptr;
+				//below line is unnecessary but it does help in some corner cases
+				temp->Target->right->left = temp->left //THIS ONLY WORKS IF target has no children
+					//TO DO
+					//could put conditionals where if temp->left and temp->Target->right->left are not null then do somethign differeent
+					//conditional would have to be above the above line
+					//but it conflicts with the above else if condition
+			}
+			else if (temp->Target->right != nullptr && temp->Target->left != nullptr) {
+				//TO DO
+				//handle cases where there are collisions.
+				//how to handle the branch that has no easy way to be reinserted into the tree
+				//
+				//
+				//if can use the same code as above and itll handle all other cases except collision cases
+				//where target->right, and target-left-> right both dont equal null
+				//really u just need to handle that case in special way
+				//all other cases can be used by shifting the left node
+				//there was a special case where yah shift the right node up because there is no left node
+				//thatwas handled by the first else-if
+				//to repeat:  all other cases can be handled by shifting left node up, except if there is collision
 
 
 
 
+
+
+
+
+
+
+
+				}
 
 
 			temp->Target_Parent = nullptr;
@@ -97,8 +138,55 @@ void BinarySearchTree<T>::Remove(T* inval) {
 			//TODO
 
 
+			if (temp->Target->left != nullptr && temp->Target->right == nullptr) {
+				
+				//this should mirror the above
+				//except instead of dealing with root
+				//deal with temp->Target_Parent
+				//so copy code and repla
+				if (temp->Target_Parent->left == temp->Target) {
+					temp->Target_Parent->left = temp->Target->left;
+				}
+				else if (temp->Target_Parent->right == temp->Target) {
+					temp->Target_Parent->right = temp->Target->left;
+				}
+				else {
+					//error
+				}
+				//Target_Parent = temp->Target->left;
+				//temp->Target->left = nullptr;
+				//below line is unnecessary
+				temp->Target->left->right = temp->right
 
 
+
+			}
+			else if(temp->Target->right != nullptr && temp->Target->left == nullptr){
+				if (temp->Target_Parent->left == temp->Target) {
+					temp->Target_Parent->left = temp->Target->right;
+				}
+				else if (temp->Target_Parent->right == temp->Target) {
+					Target_Parent = temp->Target->right;
+				}
+				//temp->Target->right = nullptr;
+				//below line is unnecessary but it does help in some corner cases
+				temp->Target->right->left = temp->left //THIS ONLY WORKS IF target has no children
+
+
+
+			}
+			else if (temp->Target->right != nullptr && temp->Target->left != nullptr) {
+
+				//TODO
+
+
+
+
+
+
+
+
+			}
 
 
 
