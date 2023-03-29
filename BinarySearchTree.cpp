@@ -80,7 +80,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				root = temp->Target->left;
 				//temp->Target->left = nullptr;
 				//below line is unnecessary
-				temp->Target->left->right= temp->right //THIS ONLY WORKS IF target has no children
+				//temp->Target->left->right= temp->right //THIS ONLY WORKS IF target has no children
 					//TO DO
 					//could put conditionals where if temp->right and temp->Target->left->right are not null then do somethign differeent
 					//conditoinal would have to be above the above line
@@ -90,7 +90,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				root = temp->Target->right;
 				//temp->Target->right = nullptr;
 				//below line is unnecessary but it does help in some corner cases
-				temp->Target->right->left = temp->left //THIS ONLY WORKS IF target has no children
+				//temp->Target->right->left = temp->left //THIS ONLY WORKS IF target has no children
 					//TO DO
 					//could put conditionals where if temp->left and temp->Target->right->left are not null then do somethign differeent
 					//conditional would have to be above the above line
@@ -156,7 +156,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				//Target_Parent = temp->Target->left;
 				//temp->Target->left = nullptr;
 				//below line is unnecessary
-				temp->Target->left->right = temp->right
+				//temp->Target->left->right = temp->right
 
 
 
@@ -170,7 +170,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				}
 				//temp->Target->right = nullptr;
 				//below line is unnecessary but it does help in some corner cases
-				temp->Target->right->left = temp->left //THIS ONLY WORKS IF target has no children
+				//temp->Target->right->left = temp->left //THIS ONLY WORKS IF target has no children
 
 
 
