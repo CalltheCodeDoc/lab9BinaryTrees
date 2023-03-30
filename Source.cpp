@@ -18,11 +18,14 @@ using namespace std;
 //bool operator <(InventoryItem& const other);
 //bool operator ==(InventoryItem& const other);
 //friend ostream& operator<<(ostream& out, const InventoryItem& other);
-
+bool retesting = false;
+bool to_test = true;
 
 int main()
 {
 
+
+	//debug code block
 
 	BinarySearchTree<int>* Tree=new BinarySearchTree<int>();
 	Tree->Insert(new int(25), Tree->root);
@@ -38,6 +41,67 @@ int main()
 	Tree->Insert(new int(8), Tree->root);
 	Tree->Insert(new int(1), Tree->root);
 	Tree->Print(Tree->root);
+
+	//cout << endl << endl << endl;
+	//cout << "Number of nodes in tree are: " << Tree->Size(0, Tree->root) << endl;
+
+	//Node<int>** arg = Tree->GetAllAscending();
+	Node<int>** arg = Tree->GetAllDescending();
+	//cout << "Size of: array: "<<sizeof(arg) << endl;
+	for (int i = 0; i < Tree->Size(0, Tree->root); i++) {
+		cout << *arg[i]->key << endl;
+	}
+
+	if (false) {
+		//seems to work, it has a fail case, but the fail case catch happens outside of the function
+		//not good to test the fail case without duplicating the external catching mechanism
+		cout << endl << endl << endl;
+		Node<int>* temp = Tree->FindMinimum(Tree->root, Tree->root->left);
+		Tree->Print(temp);
+
+		cout << endl << endl << endl;
+		temp = Tree->FindMinimum(Tree->root->right, Tree->root->right->left);
+		Tree->Print(temp);
+
+		cout << endl << endl << endl;
+		temp = Tree->FindMinimum(Tree->root->left, Tree->root->left);
+		Tree->Print(temp);
+
+		cout << endl << endl << endl;
+		temp = Tree->FindMinimum(Tree->root, Tree->root->left);
+		Tree->Print(temp);
+	}
+
+
+	if (retesting) {
+		cout << endl << endl << endl;
+		Node<int>* temp = Tree->FindTransverseFamily(new int(1), Tree->root, nullptr, nullptr);
+		Tree->Print(temp);
+		cout << endl << endl << endl;
+		temp = Tree->FindTransverseFamily(new int(100), Tree->root, nullptr, nullptr);
+		Tree->Print(temp);
+		cout << endl << endl << endl;
+		temp = Tree->FindTransverseFamily(new int(45), Tree->root, nullptr, nullptr);
+		Tree->Print(temp);
+		cout << endl << endl << endl;
+		temp = Tree->FindTransverseFamily(new int(8), Tree->root, nullptr, nullptr);
+		Tree->Print(temp);
+		cout << endl << endl << endl;
+		temp = Tree->FindTransverseFamily(new int(25), Tree->root, nullptr, nullptr);
+		Tree->Print(temp);
+	}
+
+	if (to_test) {
+		//Doesn't work, remove function is broken
+		Tree->remove(new int(5));
+
+		Tree->Print(Tree->root);
+		//so far only thing that half works is removing 31 off the right branch, but the right branch is fucked up in display
+		//errors up at right->key
+		//removing 8 works for the first root children but not past that
+		//removing 17 errors up all but the root
+		//removing 1 errors on leftkey of left child of root
+	}
 
 
 	return 0;

@@ -14,14 +14,15 @@ public:
 	BinarySearchTree();
 	~BinarySearchTree();
 	void Insert(T* inval, Node<T>* parent);
+	T* remove(T* key);
 	void Remove(T* inval);
 	//these functions Remove should rebalance if necessary
 	bool Find(T* inval, Node<T>* parent);
 	Node<T>* FindTransverse(T* inval, Node<T>* parent);
-	void GetAllAscending();   //key is string,  count is data//  sort by string
-	void GetAllDescending();
+	Node<T>** GetAllAscending();   //key is string,  count is data//  sort by string
+	Node<T>** GetAllDescending();
 	void EmptyTree();
-	int Size();
+	int Size(int count, Node<T>* node);
 	void Print(Node<T>* toprint);
 
 	//delete later
@@ -30,7 +31,8 @@ public:
 	
 	Node<T>* FindTransverseFamily(T* inval, Node<T>* grandparent, Node<T>* parent, Node<T>* child);
 	Node<T>* FindMinimum(Node<T>* start, Node<T>* target);
-
+	int Collect(Node<T>** arr, int index, Node<T>* node);
+	int collect(Node<T>** arr, int index, Node<T>* node);
 	//these are used in recurssion where yah ahve to keep track of the parent and grandparent
 	//Node<T>* BinarySearchTree<T>::FindTransverseParent(T* inval, Node<T>* parent);
 	
@@ -41,8 +43,16 @@ public:
 	void RotateLeftRight(Node<T>* parent, Node<T>* pivot);
 	void RotateRightLeft(Node<T>* parent, Node<T>* pivot);
 
-		Node<T>* root;
+	T* FindSmallestLarger(Node<T>* temp);
+	T* FindLargestSmaller(Node<T>* temp);
+	int Height(Node<T>* current, Node<T>* parent);
+	void rotateLeft(Node<T>* parent, Node<T>* pivot);
+	void rotateRight(Node<T>* parent, Node<T>* pivot);
+	void rotateRightLeft(Node<T>* parent, Node<T>* pivot);
+		void rotateLeftRight(Node<T>* parent, Node<T>* pivot);
 
+		Node<T>* root;
+		int size;
 
 
 	/*

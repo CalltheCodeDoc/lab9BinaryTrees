@@ -14,6 +14,9 @@ Node<T>::Node(T* inval) {
 
 template <typename T>
 Node<T>::~Node() {
+	Target_Parent = nullptr;
+	Target = nullptr;
+	delete key;
 	delete left;
 	delete right;
 	//maybe delete value

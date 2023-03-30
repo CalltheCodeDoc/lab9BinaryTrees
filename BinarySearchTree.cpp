@@ -5,9 +5,12 @@ using namespace std;
 template <typename T>
 BinarySearchTree<T>::BinarySearchTree(){
 	root=nullptr;
+	size = 0;
 }
 template <typename T>
-BinarySearchTree<T>::~BinarySearchTree() { }
+BinarySearchTree<T>::~BinarySearchTree() { 
+
+}
 template <typename T>
 void BinarySearchTree<T>::Insert(T* inval, Node<T>* parent) {
 	//inserting options:
@@ -53,6 +56,15 @@ void BinarySearchTree<T>::Insert(T* inval, Node<T>* parent) {
 }
 template <typename T>
 void BinarySearchTree<T>::Remove(T* inval) {
+
+
+	//*******************************************************************************************
+	//REMOVE FUNCTION
+	//DELETEING A NODE CAUSES A CHAIN REACTION of deleting all nodes below it,
+	//Even if its temp
+	//change left and right pointers to nullptrs  before manually deleting node in this function
+	//******************************************************************************************
+
 
 	//these functions Remove should rebalance if necessary
 		//this is inefficient
@@ -109,23 +121,29 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				//MAYBE IT WORKS ANY WAY BUT DOUBLE CHECK
 				//seems to be valid so thumbs up
 				if (temp->Target->right->left == nullptr) {
-					temp->Target->data = temp->Target->right->data;
+					temp->Target->key = temp->Target->right->key;
 					Node<T>* temp2 = temp->Target->right;
 					temp->Target->right = temp->Target->right->right;
+					temp2->right = nullptr;
+					temp2->left = nullptr;
 					delete temp2;
 					exception = true;
 				}
 				else {
-					Node<T>* minimum = FindMin(temp->Target->right,temp->Target->right->left);
+					Node<T>* minimum = FindMinimum(temp->Target->right,temp->Target->right->left);
 					if (minimum->left != nullptr && minimum->left->right != nullptr) {
-						temp->Target->data = minimum->left->data;
+						temp->Target->key = minimum->left->key;
 						Node<T>* temp3 = minimum->left;
 						minimum->left = minimum->left->right;
+						temp3->left = nullptr;
+						temp3->right = nullptr;
 						delete temp3;
 
 					}
 					else {
-						temp->Target->data = minimum->left->data;  
+						temp->Target->key = minimum->left->key;  
+						minimum->left->left = nullptr;
+						minimum->left->right = nullptr;
 						delete minimum->left;
 						minimum->left = nullptr;
 						//delete minimum;
@@ -153,6 +171,8 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				}
 
 			if (!exception) {
+				temp->left = nullptr;
+				temp->right = nullptr;
 				delete temp;
 			}
 			temp->Target_Parent = nullptr;
@@ -223,28 +243,34 @@ void BinarySearchTree<T>::Remove(T* inval) {
 					//this checks to see if the conditions are right for the 
 					//recursion to end in one loop
 					//if it doesnt then the else catches everything else
-					temp->Target->data = temp->Target->right->data;
+					temp->Target->key = temp->Target->right->key;
 					//temp->Target->value = minimum->value;
 					Node<T>* temp2 = temp->Target->right;
 					temp->Target->right = temp->Target->right->right;
 					//do i need to set the pointers to null??
+					temp2->left = nullptr;
+					temp2->right = nullptr;
 					delete temp2;
 					exception = true;
 				}
 				else {
-					Node<T>* minimum = FindMin(temp->Target->right, temp->Target->right->left);
+					Node<T>* minimum = FindMinimum(temp->Target->right, temp->Target->right->left);
 					if (minimum->left != nullptr && minimum->left->right != nullptr) {
-						temp->Target->data = minimum->left->data;
+						temp->Target->key = minimum->left->key;
 						Node<T>* temp3 = minimum->left;
 						minimum->left = minimum->left->right;
+						temp3->left = nullptr;
+						temp3->right = nullptr;
 						delete temp3;
 
 					}
 					else {
-						temp->Target->data = minimum->left->data;  //should this dereference?
+						temp->Target->key = minimum->left->key;  //should this dereference?
 						//* in front to derefernce?????????  im not sure
 						//temp->Target->value = minimum->value;
 						// uncomment value if add value to node
+						minimum->left->left = nullptr;
+						minimum->left->right = nullptr;
 						delete minimum->left;
 						minimum->left = nullptr;
 						//delete minimum;
@@ -285,6 +311,8 @@ void BinarySearchTree<T>::Remove(T* inval) {
 			temp->Target_Parent = nullptr;
 			temp->isTarget = false;
 			temp->Target = nullptr;
+			temp->left = nullptr;
+			temp->right = nullptr;
 			delete temp;
 
 		}
@@ -303,6 +331,8 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				temp->isTarget = false;
 				temp->Target_Parent == nullptr;
 				temp->Target == nullptr;
+				temp->left = nullptr;
+				temp->right = nullptr;
 				delete temp;
 
 
@@ -325,10 +355,10 @@ bool BinarySearchTree<T>::Find(T* inval, Node<T>* parent) {
 		return true;
 	}
 	else if (*inval > *parent->key) {
-		return Find(*inval, parent->right);
+		return Find(inval, parent->right);
 	}
 	else {
-		return Find(*inval, parent->left);
+		return Find(inval, parent->left);
 	}
 
 }
@@ -388,13 +418,13 @@ Node<T>* BinarySearchTree<T>::FindTransverseFamily(T* inval, Node<T>* grandparen
 		if (grandparent == nullptr) {
 			return nullptr; //not found
 		}
-		else if (*grandparent->key == inval) {
+		else if (*grandparent->key == *inval) {
 			grandparent->isTarget = true;
 			grandparent->Target_Parent = nullptr;  //***************************************** even if u put root it wont work, will have to deal with the root issue iftarget is true, then change what root points too manually ********************
 			grandparent->Target = grandparent; 
 			return grandparent;
 		}
-		else if (inval > *grandparent->key) {
+		else if (*inval > *grandparent->key) {
 			return FindTransverseFamily(inval, grandparent, grandparent->right, nullptr);
 			//return FindTransverse(inval, grandparent->right);
 		}
@@ -465,13 +495,92 @@ Node<T>* BinarySearchTree<T>::FindTransverseGrandParent(T* inval, Node<T>* paren
 }
 */
 template <typename T>
-void BinarySearchTree<T>::GetAllAscending() { }
+Node<T>** BinarySearchTree<T>::GetAllAscending() {
+	int const numnodes = this->Size(0, this->root);
+	Node<T>** arr = new Node<T>*[numnodes];
+	Collect(arr, 0, root);
+	return arr;
+}
 template <typename T>
-void BinarySearchTree<T>::GetAllDescending() { }
+Node<T>** BinarySearchTree<T>::GetAllDescending() { 
+	int const numnodes = this->Size(0, this->root);
+	Node<T>** arr = new Node<T>*[numnodes];
+	collect(arr, 0, root);
+	return arr;
+}
 template <typename T>
-void BinarySearchTree<T>::EmptyTree() { }
+void BinarySearchTree<T>::EmptyTree() // theoretically works by relying on a cascading destructor call caused by Node's destructor
+{
+	delete root;
+}
+
 template <typename T>
-int BinarySearchTree<T>::Size() { }
+int BinarySearchTree<T>::Collect(Node<T>** arr, int index, Node<T>* node) {
+	//int newindex = index;
+	if (node == nullptr) {
+		//return newindex;
+		return index;
+	}
+
+	index = Collect(arr, index, node->left);
+	//arr[newindex] = node;
+	//newindex+=1;
+	//debugging code
+	//std::cout << "count: "<<newindex << endl;
+
+	arr[index] = node;
+	index += 1;
+	index = Collect(arr, index, node->right);
+	
+	//if (node->left != nullptr) {
+	//	newindex = Collect(arr, newindex, node->left);
+	//}
+	//if (node->right != nullptr) {
+	//	newindex = Collect(arr, newindex, node->right);
+	//}
+	//return newindex;
+	return index;
+
+
+
+}
+template <typename T>
+int BinarySearchTree<T>::collect(Node<T>** arr, int index, Node<T>* node) {
+	
+	if (node == nullptr) {
+		
+		return index;
+	}
+
+	index = collect(arr, index, node->right);
+	
+	arr[index] = node;
+	index += 1;
+	index = collect(arr, index, node->left);
+
+	return index;
+
+
+
+}
+template <typename T>
+int BinarySearchTree<T>::Size(int count, Node<T>* node) { 
+	
+	if (node == nullptr) {
+		return count;
+	}
+	count += 1;
+	//if (node->left != nullptr) {
+		count = Size(count, node->left);
+	//}
+	//if (node->right != nullptr) {
+		count = Size(count, node->right);
+	//}
+	return count;
+
+
+	
+}
 template <typename T>
 void BinarySearchTree<T>::Print(Node<T>* toprint) {
 	if (toprint == NULL) return;
@@ -672,4 +781,310 @@ Node<T>* BinarySearchTree<T>::DEADFUNCTION(T* inval, Node<T>* parent) {
 		//rebalance
 	}
 
+}
+
+
+
+template <class T>
+T* BinarySearchTree<T>::remove(T* inval)
+{
+	if (root==nullptr) // empty tree case
+	{
+		//throw EmptyTreeException();
+		return nullptr;
+	}
+	if (!Find(inval, root)) // not found case
+	{
+		//throw ItemNotFoundException();
+		return nullptr;
+	}
+
+	Node<T>* temp = root;
+	Node<T>* to_delete = nullptr;
+	T* retval;
+
+	if (*root->key == *inval) // root case
+	{
+		retval = root->key;
+		if (root->right != nullptr) // right child exists
+		{
+			T* replaceval = FindSmallestLarger(root->right);
+			T* removeval = remove(replaceval);
+			size++;
+			root->key = removeval;
+		}
+		else if (root->left != nullptr) // left child exists
+		{
+			T* replaceval = FindLargestSmaller(root->left);
+			T* removeval = remove(replaceval);
+			size++;
+			root->key = removeval;
+		}
+		else // no children
+		{
+			EmptyTree();
+		}
+
+		// call balancing methods
+
+		size--;
+		return (retval);
+	}
+
+	// Other cases
+
+	// While loop to find the parent of the Node<T> we wish to remove
+	while ((temp->left != nullptr && *temp->left->key != *inval) || (temp->right != nullptr && *temp->right->key != *inval))
+	{
+		if (*temp->key < *inval && *temp->right->key != *inval)
+		{
+			temp = temp->right;
+		}
+		else if (*temp->key > *inval && *temp->left->key != *inval)
+		{
+			temp = temp->left;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	// Figure out how many children our target Node<T> has and run appropriate remove procedure
+
+	if (temp->left != nullptr && *temp->left->key == *inval) // Left child is the target
+	{
+		if (temp->left->left == nullptr && temp->left->right == nullptr) // leaf case
+		{
+			retval = temp->left->key;
+			delete temp->left;
+			temp->left = nullptr;
+		}
+		else if (temp->left->left != nullptr && temp->left->right != nullptr) // two children case
+		{
+			to_delete = temp->left;
+			//**************************************************
+			T* replaceval = FindSmallestLarger(to_delete->right);
+			T* removeval = remove(replaceval); // will always be a leaf, so recursive remove call should return pretty quickly
+			size++;
+			retval = to_delete->key;
+			to_delete->key = removeval;
+		}
+		else // one child case
+		{
+			to_delete = temp->left;
+			if ((to_delete)->left != nullptr) // to_delete has left child
+			{
+				temp->left = to_delete->left;
+				retval = to_delete->key;
+				to_delete->left = nullptr;
+				to_delete->right = nullptr;
+				delete to_delete;
+			}
+			else // to_delete has right child
+			{
+				temp->left = to_delete->right;
+				retval = to_delete->key;
+				to_delete->left = nullptr;
+				to_delete->right = nullptr;
+				delete to_delete;
+			}
+		}
+	}
+	else // Right child is the target
+	{
+		if (temp->right->left == nullptr && temp->right->right == nullptr) // leaf case
+		{
+			retval = temp->right->key;
+			delete temp->right;
+			temp->right = nullptr;
+		}
+		else if (temp->right->left != nullptr && temp->right->right != nullptr) // two children case
+		{
+			//****************************************************************
+			to_delete = temp->right;
+			T* replaceval = FindSmallestLarger(to_delete->right);
+			T* removeval = remove(replaceval); // will always be a leaf, so recursive remove call should return pretty quickly
+			size++;
+			retval = to_delete->key;
+			to_delete->key = removeval;
+		}
+		else // one child case
+		{
+			to_delete = temp->right;
+			if ((to_delete)->left != nullptr)
+			{ // to_delete has left child
+				temp->left = to_delete->left;
+				retval = to_delete->key;
+				to_delete->left = nullptr;
+				to_delete->right = nullptr;
+				delete to_delete;
+			}
+			else
+			{ // to_delete has right child
+				temp->right = to_delete->right;
+				retval = to_delete->key;
+				to_delete->left = nullptr;
+				to_delete->right = nullptr;
+				delete to_delete;
+			}
+		}
+	}
+
+	size--;
+
+	// call balancing methods
+
+	return retval;
+}
+template <class T>
+T* BinarySearchTree<T>::FindSmallestLarger(Node<T>* temp)
+{
+	while (temp->left != nullptr)
+	{
+		temp = temp->left;
+	}
+	return temp->key;
+}
+template <class T>
+T* BinarySearchTree<T>::FindLargestSmaller(Node<T>* temp)
+{
+	while (temp->right != nullptr)
+	{
+		temp = temp->right;
+	}
+	return temp->key;
+}
+// Methods for Rotation
+
+template <class T>
+int BinarySearchTree<T>::Height(Node<T>* current, Node<T>* parent)
+{
+	// base case
+	if (current == nullptr)
+	{
+		return 0;
+	}
+	int L = Height(current->left, current);
+	int R = Height(current->right, current);
+
+	// logic to know when to rotate
+	if (L - R >= 2) {
+		RotateRight(parent, current);
+		L--;
+		R++;
+	}
+	else if (L - R <= -2) {
+		RotateLeft(parent, current);
+		L++;
+		R--;
+	}
+
+	// more base cases
+	if (L > R)
+	{
+		return L + 1;
+	}
+	return R + 1;
+}
+
+template <class T>
+void BinarySearchTree<T>::rotateLeft(Node<T>* parent, Node<T>* pivot) // written in class, should work
+{
+	if (pivot == root)
+	{
+		root = pivot->right;
+		root->left = pivot;
+		pivot->right = nullptr;
+	}
+	else if (parent->left == pivot)
+	{ // if pivot is the left child of the parent
+		parent->left = pivot->right;
+		pivot->right = pivot->right->left;
+		parent->left->left = pivot;
+	}
+	else
+	{ // if pivot is the right child of the parent
+		parent->right = pivot->right;
+		pivot->right = pivot->right->left;
+		parent->right->left = pivot;
+	}
+}
+
+template <class T>
+void BinarySearchTree<T>::rotateRight(Node<T>* parent, Node<T>* pivot) // inverse of what was written in class
+{
+	if (pivot == root)
+	{
+		root = pivot->left;
+		root->right = pivot;
+		pivot->left = nullptr;
+	}
+	else if (parent->left == pivot)
+	{ // if pivot is the left child of the parent
+		parent->left = pivot->left;
+		pivot->left = pivot->left->right;
+		parent->left->right = pivot;
+	}
+	else
+	{ // if pivot is the right child of the parent
+		parent->right = pivot->left;
+		pivot->left = pivot->left->right;
+		parent->right->right = pivot;
+	}
+}
+
+template <class T>
+void BinarySearchTree<T>::rotateRightLeft(Node<T>* parent, Node<T>* pivot)
+{
+	if (pivot == root) // NOT DONE IN CLASS
+	{
+		root = pivot->right->left;
+		pivot->right->left = root->right;
+		root->right = pivot->right;
+		pivot->right = root->left;
+		root->left = pivot;
+	}
+	else if (pivot == parent->left) // pivot is left child of parent (in class)
+	{
+		parent->left = pivot->right->left; // start of case where pivot is the left of parent
+		pivot->right->left = parent->left->right;
+
+		parent->left->right = pivot->right;
+		pivot->right = parent->left->left;
+
+		parent->left->left = pivot;
+	}
+	else // pivot is right child of parent
+	{
+		parent->right = pivot->right->left; // start of case where pivot is the left of parent
+		pivot->right->left = parent->right->right;
+
+		parent->right->right = pivot->right;
+		pivot->right = parent->right->left;
+
+		parent->right->left = pivot;
+	}
+}
+
+
+template <class T>
+void BinarySearchTree<T>::rotateLeftRight(Node<T>* parent, Node<T>* pivot)
+{
+	if (pivot == root) // pivot is root (in class)
+	{
+		root = pivot->left->right;
+		pivot->left->right = root->left;
+		root->left = pivot->left;
+		pivot->left = root->right;
+		root->right = pivot;
+	}
+	else if (pivot == parent->left) // pivot is left child of parent
+	{
+
+	}
+	else // pivot is right child of parent
+	{
+
+	}
 }
