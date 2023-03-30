@@ -6,10 +6,10 @@ template <typename T>
 class Node {
 
 public:
-	Node(T inval);
+	Node(T* inval);
 	~Node();
-	T data; //value
-	T key;
+	T* key; //data
+	//T value;
 	Node* left;
 	Node* right;
 	//below is activated and deactivated for finding the target node to be used in remove functionn

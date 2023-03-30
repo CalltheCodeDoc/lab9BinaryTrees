@@ -1,6 +1,7 @@
 #include "BinarySearchTree.h"
 #include <iostream>
 
+using namespace std;
 template <typename T>
 BinarySearchTree<T>::BinarySearchTree(){
 	root=nullptr;
@@ -58,7 +59,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 	//Node<T>* tempgrandchild = FindTransverse(inval, root);
 	//bool children = false;
 	Node<T>* temp = FindTransverseFamily(inval, root, nullptr, nullptr);
-
+	bool exception = false;
 	if (temp == nullptr) {
 		return; //nothing to remove   SHould PRINT OUT A THROW EXCEPTION BUT KEEP PROGRAM RUNNING
 	}
@@ -100,21 +101,44 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				//TO DO
 				//handle cases where there are collisions.
 				//how to handle the branch that has no easy way to be reinserted into the tree
-				//
-				//
-				//if can use the same code as above and itll handle all other cases except collision cases
-				//where target->right, and target-left-> right both dont equal null
-				//really u just need to handle that case in special way
-				//all other cases can be used by shifting the left node
-				//there was a special case where yah shift the right node up because there is no left node
-				//thatwas handled by the first else-if
-				//to repeat:  all other cases can be handled by shifting left node up, except if there is collision
+				//find minimum in right subtree
+				//copy the value in targeted node
+				//remove the minimum in right subtree
+				//****************WHHHHHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPPPPPPPPPSS
+				//I DID THIS AS IF IT WERENT ROOT, BUT IT IS ROOT
+				//MAYBE IT WORKS ANY WAY BUT DOUBLE CHECK
+				//seems to be valid so thumbs up
+				if (temp->Target->right->left == nullptr) {
+					temp->Target->data = temp->Target->right->data;
+					Node<T>* temp2 = temp->Target->right;
+					temp->Target->right = temp->Target->right->right;
+					delete temp2;
+					exception = true;
+				}
+				else {
+					Node<T>* minimum = FindMin(temp->Target->right,temp->Target->right->left);
+					if (minimum->left != nullptr && minimum->left->right != nullptr) {
+						temp->Target->data = minimum->left->data;
+						Node<T>* temp3 = minimum->left;
+						minimum->left = minimum->left->right;
+						delete temp3;
 
+					}
+					else {
+						temp->Target->data = minimum->left->data;  
+						delete minimum->left;
+						minimum->left = nullptr;
+						//delete minimum;
+						exception = true;
 
+						//TODO
+						//I THINK THIS HANDLES ALL CASES EXCEPT WHEN the minimum has a right child
 
+						//THIS TO DO SHOULD BE ABOVE INBETWEEN ELSE AND LINE BELOW MINIMUM
 
+						//THIS IS WHERE YAH DO RECURSION
 
-
+					}
 
 
 
@@ -123,10 +147,17 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				}
 
 
+
+
+
+				}
+
+			if (!exception) {
+				delete temp;
+			}
 			temp->Target_Parent = nullptr;
 			temp->isTarget = false;
 			temp->Target = nullptr;
-			delete temp;
 		}
 
 	}
@@ -166,7 +197,9 @@ void BinarySearchTree<T>::Remove(T* inval) {
 					temp->Target_Parent->left = temp->Target->right;
 				}
 				else if (temp->Target_Parent->right == temp->Target) {
-					Target_Parent = temp->Target->right;
+					temp->Target_Parent->right = temp->Target->right; //Target parent points to a parent
+					//but it doesnt point from left or right
+					//never change target_parent
 				}
 				//temp->Target->right = nullptr;
 				//below line is unnecessary but it does help in some corner cases
@@ -181,8 +214,54 @@ void BinarySearchTree<T>::Remove(T* inval) {
 
 
 
+				//find minimum in right subtree
+				//copy the value in targeted node
+				//remove the minimum in right subtree
+				//******************* THIS IS THE SAME CODE AS ABOVE but it was done as if it werent root
+				//this should ***************** work , btu above code might not work
+				if (temp->Target->right->left == nullptr) {
+					//this checks to see if the conditions are right for the 
+					//recursion to end in one loop
+					//if it doesnt then the else catches everything else
+					temp->Target->data = temp->Target->right->data;
+					//temp->Target->value = minimum->value;
+					Node<T>* temp2 = temp->Target->right;
+					temp->Target->right = temp->Target->right->right;
+					//do i need to set the pointers to null??
+					delete temp2;
+					exception = true;
+				}
+				else {
+					Node<T>* minimum = FindMin(temp->Target->right, temp->Target->right->left);
+					if (minimum->left != nullptr && minimum->left->right != nullptr) {
+						temp->Target->data = minimum->left->data;
+						Node<T>* temp3 = minimum->left;
+						minimum->left = minimum->left->right;
+						delete temp3;
+
+					}
+					else {
+						temp->Target->data = minimum->left->data;  //should this dereference?
+						//* in front to derefernce?????????  im not sure
+						//temp->Target->value = minimum->value;
+						// uncomment value if add value to node
+						delete minimum->left;
+						minimum->left = nullptr;
+						//delete minimum;
+						exception = true;
+
+						//TODO
+						//I THINK THIS HANDLES ALL CASES EXCEPT WHEN the minimum has a right child
+
+						//THIS TO DO SHOULD BE ABOVE INBETWEEN ELSE AND LINE BELOW MINIMUM
+
+						//THIS IS WHERE YAH DO RECURSION
 
 
+					}
+
+
+				}
 
 
 
@@ -224,7 +303,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 				temp->isTarget = false;
 				temp->Target_Parent == nullptr;
 				temp->Target == nullptr;
-				delete temp
+				delete temp;
 
 
 			}
@@ -233,120 +312,7 @@ void BinarySearchTree<T>::Remove(T* inval) {
 	}
 }
 
-template <typename T>
-Node<T>* BinarySearchTree<T>::DEADFUNCTION(T* inval, Node<T>* parent) {
-	/////////////////////////////  DONT USE CODE BELOW
-	/////////////////////////////////////////////////////////////////////////////
-	Node<T>* tempgrandchild = FindTransverse(inval, root);
-	Node<T>* temp = FindTransverseFamily(inval, root, nullptr, nullptr);
-	bool children = false;
 
-	if (tempgrandchild == nullptr) {
-		return; //nothing to remove   SHould PRINT OUT A THROW EXCEPTION BUT KEEP PROGRAM RUNNING
-	}
-	if (temp == nullptr) {
-		return;  //nothing to remove   SHould PRINT OUT A THROW EXCEPTION BUT KEEP PROGRAM RUNNING
-	}
-	if (tempgrandchild->right != nullptr||tempgrandchild->left!=nullptr) {
-		children = true;
-	}
-	
-	else {
-		//remove
-		if (children) {//
-			//have to reinsert children in tree
-		}
-		else {//nochildren
-
-			//**********************************  THIS IS TOO MESSY, BETTER TO USE RECURSSION
-			// ********************************* YEAH SCREW THIS
-			// ******************************  RECURSION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			// 
-			//temp
-				//first if only activates if temp is the root and tempgrandchild= temp
-				//if this isnt the case then there is a bug here
-			 if (*temp->key == *inval) {
-				 root == nullptr;  //*************************************************************
-				 delete temp->key;
-				 delete temp->data;
-				 delete temp;
-				 return;
-			}
-			else if (*inval > *temp->key) {
-				 if (*temp->right->key == *inval) {
-					 
-					 delete temp->right->key;
-					 delete temp->right->data;
-					 //might mess up here **********************************************
-					 //maybe make second temp, then change temp->right to null ptr then delete second temp
-					 delete temp->right;
-					 temp->right == nullptr;
-					 return;
-				 }
-				 else if (*inval > *temp->right->key) {
-					 if (*temp->right->right->key == *inval) {
-						 
-						 delete temp->right->right->key;
-						 delete temp->right->right->data;
-						 delete temp->right->right;
-						 temp->right->right == nullptr;
-						 return;
-					 }
-					 else {
-						 delete temp->right->left->key;
-						 delete temp->right->left->data;
-						 delete temp->right->left;
-						 temp->right->left == nullptr;
-						 return;
-					 }
-				 }
-				 //else {
-					 //dont need this else
-				 //}
-			}
-			else {
-				 if (*temp->left->key == *inval) {
-
-					 delete temp->left->key;
-					 delete temp->left->data;
-					 //might mess up here **********************************************
-					 //maybe make second temp, then change temp->right to null ptr then delete second temp
-					 delete temp->left;
-					 temp->left == nullptr;
-					 return;
-				 }
-				 else if (*inval > *temp->left->key) {
-					 if (*temp->left->right->key == *inval) {
-
-						 delete temp->left->right->key;
-						 delete temp->left->right->data;
-						 delete temp->left->right;
-						 temp->left->right == nullptr;
-						 return;
-					 }
-					 else {
-						 delete temp->left->left->key;
-						 delete temp->left->left->data;
-						 delete temp->left->left;
-						 temp->left->left == nullptr;
-						 return;
-					 }
-				 }
-				 //else {
-					 //dont need this else
-				// }
-			}
-				//problem wiht this is yah need to work with parents and grandparents
-				//in both the if and else case
-				//the parent needs to be rewritten to point to nullptr while the
-				//child needs to be deleted
-				//use recursion remove functions
-				
-		}
-		//rebalance
-	}
-
-}
 
 
 template <typename T>
@@ -366,6 +332,24 @@ bool BinarySearchTree<T>::Find(T* inval, Node<T>* parent) {
 	}
 
 }
+
+template <typename T>
+Node<T>* BinarySearchTree<T>::FindMinimum(Node<T>* start, Node<T>* target) {
+	//recurssion
+	if (start->left==nullptr) {
+		return start;  //only problem is you wont know if it stops at if it stops at the start
+		//have to check that when ever u call this function
+		//THIS IS BAD IF THIS HAPPENS FIRSTIME
+	}
+	else if (start->left->left == nullptr) {
+		return start;
+	}
+	else {
+		return FindMinimum(start->left, start->left->left);
+	}
+
+}
+
 template <typename T>
 Node<T>* BinarySearchTree<T>::FindTransverse(T* inval, Node<T>* parent) {
 	//recurssion
@@ -405,7 +389,7 @@ Node<T>* BinarySearchTree<T>::FindTransverseFamily(T* inval, Node<T>* grandparen
 			return nullptr; //not found
 		}
 		else if (*grandparent->key == inval) {
-			grandparent->isTarget = True;
+			grandparent->isTarget = true;
 			grandparent->Target_Parent = nullptr;  //***************************************** even if u put root it wont work, will have to deal with the root issue iftarget is true, then change what root points too manually ********************
 			grandparent->Target = grandparent; 
 			return grandparent;
@@ -490,14 +474,14 @@ template <typename T>
 int BinarySearchTree<T>::Size() { }
 template <typename T>
 void BinarySearchTree<T>::Print(Node<T>* toprint) {
-	if (toprint == null) return;
-	cout << toprint->data << " ( ";
+	if (toprint == NULL) return;
+	cout << *toprint->key << " ( ";
 	if (toprint->left != nullptr) {
-		cout << toprint->left->data;
+		cout << *toprint->left->key;
 	}
 	cout << " ,";
 	if(toprint->right!=nullptr)
-		cout << toprint->right->data;
+		cout << *toprint->right->key;
 	cout << " ) " << endl;
 	Print(toprint->left);
 	Print(toprint->right);
@@ -510,7 +494,7 @@ int BinarySearchTree<T>::GetHeight(Node<T>* current) {
 		return 0;
 	int L = GetHeight(current->left);
 	int R = GetHeight(current->right);
-	if(L==nullptr && R==nullptr)
+	if (L == 0 && R == 0)//(L==nullptr && R==nullptr)
 		return 1;
 	if (L > R) {
 		return 2 + 1;  
@@ -530,6 +514,7 @@ void BinarySearchTree<T>::RotateLeft(Node<T>* parent, Node<T>* pivot) { }
 template <typename T>
 void BinarySearchTree<T>::RotateRight(Node<T>* parent, Node<T>* pivot) { 
 	//children
+	bool children = false;
 	if (children) {
 
 		parent->left = parent->left->left;
@@ -564,3 +549,127 @@ void BinarySearchTree<T>::RotateRightLeft(Node<T>* parent, Node<T>* pivot) {
 
 }
 
+
+
+
+
+
+
+
+
+
+
+template <typename T>
+Node<T>* BinarySearchTree<T>::DEADFUNCTION(T* inval, Node<T>* parent) {
+	/////////////////////////////  DONT USE CODE BELOW
+	/////////////////////////////////////////////////////////////////////////////
+	Node<T>* tempgrandchild = FindTransverse(inval, root);
+	Node<T>* temp = FindTransverseFamily(inval, root, nullptr, nullptr);
+	bool children = false;
+
+	if (tempgrandchild == nullptr) {
+		return; //nothing to remove   SHould PRINT OUT A THROW EXCEPTION BUT KEEP PROGRAM RUNNING
+	}
+	if (temp == nullptr) {
+		return;  //nothing to remove   SHould PRINT OUT A THROW EXCEPTION BUT KEEP PROGRAM RUNNING
+	}
+	if (tempgrandchild->right != nullptr || tempgrandchild->left != nullptr) {
+		children = true;
+	}
+
+	else {
+		//remove
+		if (children) {//
+			//have to reinsert children in tree
+		}
+		else {//nochildren
+
+			//**********************************  THIS IS TOO MESSY, BETTER TO USE RECURSSION
+			// ********************************* YEAH SCREW THIS
+			// ******************************  RECURSION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			// 
+			//temp
+				//first if only activates if temp is the root and tempgrandchild= temp
+				//if this isnt the case then there is a bug here
+			if (*temp->key == *inval) {
+				root == nullptr;  //*************************************************************
+				delete temp->key;
+				delete temp->data;
+				delete temp;
+				return;
+			}
+			else if (*inval > *temp->key) {
+				if (*temp->right->key == *inval) {
+
+					delete temp->right->key;
+					delete temp->right->data;
+					//might mess up here **********************************************
+					//maybe make second temp, then change temp->right to null ptr then delete second temp
+					delete temp->right;
+					temp->right == nullptr;
+					return;
+				}
+				else if (*inval > *temp->right->key) {
+					if (*temp->right->right->key == *inval) {
+
+						delete temp->right->right->key;
+						delete temp->right->right->data;
+						delete temp->right->right;
+						temp->right->right == nullptr;
+						return;
+					}
+					else {
+						delete temp->right->left->key;
+						delete temp->right->left->data;
+						delete temp->right->left;
+						temp->right->left == nullptr;
+						return;
+					}
+				}
+				//else {
+					//dont need this else
+				//}
+			}
+			else {
+				if (*temp->left->key == *inval) {
+
+					delete temp->left->key;
+					delete temp->left->data;
+					//might mess up here **********************************************
+					//maybe make second temp, then change temp->right to null ptr then delete second temp
+					delete temp->left;
+					temp->left == nullptr;
+					return;
+				}
+				else if (*inval > *temp->left->key) {
+					if (*temp->left->right->key == *inval) {
+
+						delete temp->left->right->key;
+						delete temp->left->right->data;
+						delete temp->left->right;
+						temp->left->right == nullptr;
+						return;
+					}
+					else {
+						delete temp->left->left->key;
+						delete temp->left->left->data;
+						delete temp->left->left;
+						temp->left->left == nullptr;
+						return;
+					}
+				}
+				//else {
+					//dont need this else
+			   // }
+			}
+			//problem wiht this is yah need to work with parents and grandparents
+			//in both the if and else case
+			//the parent needs to be rewritten to point to nullptr while the
+			//child needs to be deleted
+			//use recursion remove functions
+
+		}
+		//rebalance
+	}
+
+}

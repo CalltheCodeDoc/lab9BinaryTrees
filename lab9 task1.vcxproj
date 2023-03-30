@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BinarySearchTree.cpp" />
-    <ClCompile Include="Homework 1.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Node.cpp" />
   </ItemGroup>

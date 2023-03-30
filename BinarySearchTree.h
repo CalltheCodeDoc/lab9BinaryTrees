@@ -29,6 +29,7 @@ public:
 
 	
 	Node<T>* FindTransverseFamily(T* inval, Node<T>* grandparent, Node<T>* parent, Node<T>* child);
+	Node<T>* FindMinimum(Node<T>* start, Node<T>* target);
 
 	//these are used in recurssion where yah ahve to keep track of the parent and grandparent
 	//Node<T>* BinarySearchTree<T>::FindTransverseParent(T* inval, Node<T>* parent);
@@ -40,7 +41,11 @@ public:
 	void RotateLeftRight(Node<T>* parent, Node<T>* pivot);
 	void RotateRightLeft(Node<T>* parent, Node<T>* pivot);
 
+		Node<T>* root;
 
+
+
+	/*
 	class TreeException : public exception {
 	public:
 		TreeException(const char* message) : msg_(message) {}
@@ -48,9 +53,9 @@ public:
 	private:
 		string msg_;
 	};
+	*/
 
 	private:
-		Node<T>* root;
 	/*
 	private:
 		struct Node

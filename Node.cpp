@@ -1,8 +1,8 @@
 #include "Node.h"
 
 template <typename T>
-Node<T>::Node(T inval) {
-	data = inval; //i think
+Node<T>::Node(T* inval) {
+	key = inval; //i think
 	//or is data the count????
 	left = nullptr;
 	right = nullptr;

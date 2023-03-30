@@ -5,6 +5,9 @@
 #include <iomanip>
 #include <fstream>
 #include "Node.h"
+#include "Node.cpp"
+#include "BinarySearchTree.h"
+#include "BinarySearchTree.cpp"
 
 using namespace std;
 
@@ -17,8 +20,32 @@ using namespace std;
 //friend ostream& operator<<(ostream& out, const InventoryItem& other);
 
 
+int main()
+{
+
+
+	BinarySearchTree<int>* Tree=new BinarySearchTree<int>();
+	Tree->Insert(new int(25), Tree->root);
+	Tree->Insert(new int(20), Tree->root);
+	Tree->Insert(new int(45), Tree->root);
+	Tree->Insert(new int(13), Tree->root);
+	Tree->Insert(new int(100), Tree->root);
+	Tree->Insert(new int(6), Tree->root);
+	Tree->Insert(new int(17), Tree->root);
+	Tree->Insert(new int(30), Tree->root);
+	Tree->Insert(new int(31), Tree->root);
+	Tree->Insert(new int(5), Tree->root);
+	Tree->Insert(new int(8), Tree->root);
+	Tree->Insert(new int(1), Tree->root);
+	Tree->Print(Tree->root);
+
+
+	return 0;
+}
+
 //**********************************************************************************************************
 //CODE BELOW IS HW1 CODE NOT YET ADJUSTED FOR LAB 9
+/*
 const int LETTER_NUM = 26;
 int main()
 {
@@ -38,16 +65,7 @@ int main()
 			getline(cin, filename);
 			inFile.open(filename, ios::in);
 		}
-		/*With the file open, read into a Structure :
-		a.Title
-		b.Author full name(the name is stored in the file as Firstand Last name with a
-		space between)
-		c.Word Count(total number of words in the book contents.A word is one or more
-			letters(not counting punctuation) separated by a space so ice cream is considered
-			2 words)
-		d.Letter frequency(this is the number of times each letter has been encountered in
-			the book contents)
-		e.Line Count(count of new line characters in the contents section)*/
+		
 		struct Book
 		{
 			string title;
@@ -115,18 +133,7 @@ int main()
 			}
 		}
 		inFile.close();
-		/*Save this information in the file CardCatalog.txt
-	   a.If the file doesn’t exist, create it.
-	   b.If the file does exist, append to it.
-	   c.Leave a blank line between each card catalog entry.
-	   d.The file should be human readable such as (is should be similar but not
-		necessarily the same as the following) :
-		Title: Moby Dick
-		Full Author : Herman Melville
-		Author First Name : Herman
-		Author Last Name : Melville
-		Word count : 375
-		Line count : 17*/
+		
 		ofstream outFile;
 		outFile.open("CardCatalog.txt", ios::app);
 		outFile << "Title : " << book.title << endl;
@@ -139,12 +146,7 @@ int main()
 		outFile << "Word count : " << book.wordCount << endl;
 		outFile << "Line count : " << book.lineCount << endl << endl;
 		outFile.close();
-		/*5. Ask the user if they want to see the letter frequency.If they agree, it should look likeii :
-		Moby Dick letter frequency :
-		a: 0.0762 %
-		b : 0.0 %
-		c : 0.0253 %
-		d : 0.0405 %*/
+		
 		cout << "Do you want to see the letter frequency? Enter \"yes\" or \"no\": ";
 		//string answer;
 		cin >> answer;
@@ -161,9 +163,7 @@ int main()
 			}
 		}
 
-		/*6. Ask the user if they wish to process another book.If they do, repeat requirement 2.  If
-		they don’t, program should quit.This should not add to previous results*/
-
+		
 
 		cout << "Do you want to process another book? (Enter 'yes' or 'no'): ";
 		cin >> answer;
@@ -176,6 +176,7 @@ int main()
 		}
 		cin.ignore(1, '\n');
 	} while (answer == "yes");
-
+	
 	return 0;
 }
+*/
