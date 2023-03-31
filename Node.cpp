@@ -16,7 +16,7 @@ template <typename T>
 Node<T>::~Node() {
 	Target_Parent = nullptr;
 	Target = nullptr;
-	delete key;
+	//delete key;
 	delete left;
 	delete right;
 	//maybe delete value

@@ -93,7 +93,7 @@ int main()
 
 	if (to_test) {
 		//Doesn't work, remove function is broken
-		Tree->remove(new int(5));
+		Tree->remove(new int(25));
 
 		Tree->Print(Tree->root);
 		//so far only thing that half works is removing 31 off the right branch, but the right branch is fucked up in display
