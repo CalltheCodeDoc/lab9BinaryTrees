@@ -3,6 +3,7 @@
 #define BINARYSEARCHTREE_H
 #include "Node.h"
 #include <exception>
+#include "TreeExceptions.h"
 
 template <typename T>
 class BinarySearchTree
@@ -18,12 +19,14 @@ public:
 	void Remove(T* inval);
 	//these functions Remove should rebalance if necessary
 	bool Find(T* inval, Node<T>* parent);
+	T* Find(T* inval);
 	Node<T>* FindTransverse(T* inval, Node<T>* parent);
 	Node<T>** GetAllAscending();   //key is string,  count is data//  sort by string
 	Node<T>** GetAllDescending();
 	void EmptyTree();
 	int Size(int count, Node<T>* node);
 	void Print(Node<T>* toprint);
+	void PrintVect(Node<T>** vects);
 
 	//delete later
 	Node<T>* DEADFUNCTION(T* inval, Node<T>* parent);

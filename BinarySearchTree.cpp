@@ -45,6 +45,8 @@ void BinarySearchTree<T>::Insert(T* inval, Node<T>* parent) {
 		}
 		Insert(inval, parent->left);
 	}
+
+	Height(root, nullptr);
 	//need to manage other parameters here like
 	// 
 	//height
@@ -934,6 +936,7 @@ T* BinarySearchTree<T>::remove(T* inval)
 	size--;
 
 	// call balancing methods
+	Height(root, nullptr);
 
 	return retval;
 }
@@ -965,19 +968,40 @@ int BinarySearchTree<T>::Height(Node<T>* current, Node<T>* parent)
 	{
 		return 0;
 	}
+
 	int L = Height(current->left, current);
 	int R = Height(current->right, current);
 
 	// logic to know when to rotate
-	if (L - R >= 2) {
-		RotateRight(parent, current);
-		L--;
-		R++;
+	if (L - R >= 2)
+	{
+		if (current->left->left != nullptr)
+		{
+			rotateRight(parent, current);
+			L--;
+			R++;
+		}
+		else
+		{
+			rotateLeftRight(parent, current);
+			L--;
+			R++;
+		}
 	}
-	else if (L - R <= -2) {
-		RotateLeft(parent, current);
-		L++;
-		R--;
+	else if (L - R <= -2)
+	{
+		if (current->right->right != nullptr)
+		{
+			rotateLeft(parent, current);
+			L++;
+			R--;
+		}
+		else
+		{
+			rotateRightLeft(parent, current);
+			L++;
+			R--;
+		}
 	}
 
 	// more base cases
@@ -994,8 +1018,8 @@ void BinarySearchTree<T>::rotateLeft(Node<T>* parent, Node<T>* pivot) // written
 	if (pivot == root)
 	{
 		root = pivot->right;
+		pivot->right = root->left;
 		root->left = pivot;
-		pivot->right = nullptr;
 	}
 	else if (parent->left == pivot)
 	{ // if pivot is the left child of the parent
@@ -1017,8 +1041,8 @@ void BinarySearchTree<T>::rotateRight(Node<T>* parent, Node<T>* pivot) // invers
 	if (pivot == root)
 	{
 		root = pivot->left;
+		pivot->left = root->right;
 		root->right = pivot;
-		pivot->left = nullptr;
 	}
 	else if (parent->left == pivot)
 	{ // if pivot is the left child of the parent
@@ -1040,7 +1064,7 @@ void BinarySearchTree<T>::rotateRightLeft(Node<T>* parent, Node<T>* pivot)
 	if (pivot == root) // NOT DONE IN CLASS
 	{
 		root = pivot->right->left;
-		pivot->right->left = root->right;
+		pivot->right->left = root->right; // root->right to root->left
 		root->right = pivot->right;
 		pivot->right = root->left;
 		root->left = pivot;
@@ -1057,7 +1081,7 @@ void BinarySearchTree<T>::rotateRightLeft(Node<T>* parent, Node<T>* pivot)
 	}
 	else // pivot is right child of parent
 	{
-		parent->right = pivot->right->left; // start of case where pivot is the left of parent
+		parent->right = pivot->right->left; // start of case where pivot is the right of parent
 		pivot->right->left = parent->right->right;
 
 		parent->right->right = pivot->right;
@@ -1081,10 +1105,64 @@ void BinarySearchTree<T>::rotateLeftRight(Node<T>* parent, Node<T>* pivot)
 	}
 	else if (pivot == parent->left) // pivot is left child of parent
 	{
+		parent->left = pivot->left->right; // start of case where pivot is the left of parent
+		pivot->left->right = parent->left->right;
 
+		parent->left->left = pivot->left;
+		pivot->left = parent->left->right;
+
+		parent->left->right = pivot;
 	}
 	else // pivot is right child of parent
 	{
+		parent->right = pivot->left->right; // start of case where pivot is the right of parent
+		pivot->left->right = parent->right->left;
 
+		parent->right->left = pivot->left;
+		pivot->left = parent->right->right;
+
+		parent->right->right = pivot;
+	}
+}
+
+
+template <class T>
+T* BinarySearchTree<T>::Find(T* inval) // returns pointer to data of the node (could be edited to return entire node if needed
+{
+	if (Size(0, root) == 0)
+	{
+		throw EmptyTreeException();
+	}
+	Node<T>* temp = root;
+	T* retval;
+	while (true)
+	{
+		if (temp == nullptr)
+		{ // not found case
+			return nullptr;
+		}
+		if (*temp->key == *inval)
+		{ // found case
+			retval = temp->key; //////////////////////
+			return retval;
+		}
+		if (*temp->key > *inval)
+		{ // move right case
+			temp = temp->left;
+		}
+		else
+		{ // move left case
+			temp = temp->right;
+		}
+	}
+}
+
+template <class T>
+void BinarySearchTree<T>::PrintVect(Node<T>** vects)
+{
+	for (int i = 0; i < Size(0, root); i++)
+	{
+		//std::cout << *vects[i] << endl;
+		cout << *vects[i]->key << endl;
 	}
 }
